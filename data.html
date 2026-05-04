@@ -1,102 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Isi Biodata</title>
-</head>
-<body>
-    <h2>Isi Data Diri</h2>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <form onsubmit="simpanData(event)">
-        <label>Nama:</label><br>
-        <input type="text" id="nama" required><br><br>
+const firebaseConfig = {
+    apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+    authDomain: "iothsym.firebaseapp.com",
+    projectId: "iothsym",
+    appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+};
 
-        <label>Umur:</label><br>
-        <input type="number" id="umur" required><br><br>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-        <label>Gender:</label><br>
-        <select id="gender">
-            <option value="Laki-laki">Laki-laki</option>
-            <option value="Perempuan">Perempuan</option>
-        </select><br><br>
+// 🔐 cek login
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "index.html";
+    }
+});
 
-        <label>Tanggal:</label><br>
-        <input type="date" id="tanggal" required><br><br>
+// 💾 simpan ke localStorage
+window.simpanData = function(e){
+    e.preventDefault();
 
-        <button type="submit">Simpan</button>
-    </form>
+    let nama = document.getElementById("nama").value.trim();
+    let umur = document.getElementById("umur").value;
+    let gender = document.getElementById("gender").value;
+    let tanggal = document.getElementById("tanggal").value;
 
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-
-        // 🔐 Cek login (FIX DELAY)
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                console.log("User login:", user.email);
-            } else {
-                // beri waktu Firebase membaca session
-                setTimeout(() => {
-                    if (!auth.currentUser) {
-                        alert("Silakan login terlebih dahulu!");
-                        window.location.href = "index.html";
-                    }
-                }, 1000);
-            }
-        });
-
-        // 💾 Simpan data ke Firestore
-        window.simpanData = async function(e){
-            e.preventDefault();
-
-            if(!currentUser){
-                alert("User belum login!");
-                return;
-            }
-
-            let nama = document.getElementById("nama").value.trim();
-            let umur = document.getElementById("umur").value;
-            let gender = document.getElementById("gender").value;
-            let tanggal = document.getElementById("tanggal").value;
-
-            try {
-    await addDoc(collection(db, "data_diri"), {
-        uid: currentUser.uid,
-        email: currentUser.email,
-        nama: nama,
-        umur: umur,
-        gender: gender,
-        tanggal: tanggal,
-        created_at: new Date()
+    data.push({
+        nama,
+        umur,
+        gender,
+        tanggal
     });
+
+    localStorage.setItem("dataDiri", JSON.stringify(data));
 
     alert("Data berhasil disimpan!");
 
-    // ✅ redirect sekali saja
-    setTimeout(() => {
-        window.location.href = "record.html";
-    }, 300);
-
-} catch (error) {
-    alert("Gagal menyimpan: " + error.message);
-    console.error(error);
+    window.location.href = "record.html";
 }
-        }
-    </script>
-</body>
-</html>
+</script>
