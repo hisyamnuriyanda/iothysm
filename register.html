@@ -4,11 +4,12 @@
     <title>Register</title>
 </head>
 <body>
+
     <h2>Halaman Register</h2>
 
     <form id="formRegister">
-        <label>Username:</label><br>
-        <input type="text" id="username" required><br><br>
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br><br>
 
         <label>Password:</label><br>
         <input type="password" id="password" required><br><br>
@@ -20,7 +21,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
@@ -32,61 +33,29 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        document.getElementById("formRegister").addEventListener("submit", async function(e){
+        document.getElementById("formRegister").addEventListener("submit", function(e){
             e.preventDefault();
 
-            let username = document.getElementById("username").value.trim();
+            let email = document.getElementById("email").value.trim();
             let password = document.getElementById("password").value.trim();
 
-            // 🔥 VALIDASI USERNAME
-            if(username.length < 3){
-                alert("Username minimal 3 karakter");
-                return;
-            }
-
-            if(username.length > 15){
-                alert("Username maksimal 15 karakter");
-                return;
-            }
-
-            if(username.includes(" ")){
-                alert("Username tidak boleh ada spasi");
-                return;
-            }
-
-            if(!/^[a-zA-Z0-9_]+$/.test(username)){
-                alert("Username hanya boleh huruf, angka, dan underscore (_)");
-                return;
-            }
-
-            // 🔥 VALIDASI PASSWORD
+            // validasi sederhana
             if(password.length < 6){
                 alert("Password minimal 6 karakter");
                 return;
             }
 
-            let email = username + "@app.com";
-
-            try {
-                // 🔍 CEK USERNAME SUDAH ADA ATAU BELUM
-                let methods = await fetchSignInMethodsForEmail(auth, email);
-
-                if(methods.length > 0){
-                    alert("Username sudah digunakan!");
-                    return;
-                }
-
-                // 🔥 BUAT AKUN
-                await createUserWithEmailAndPassword(auth, email, password);
-
+            createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
                 alert("Registrasi berhasil!");
                 window.location.href = "index.html";
-
-            } catch (error) {
+            })
+            .catch((error) => {
                 alert("Error: " + error.message);
                 console.error(error);
-            }
+            });
         });
     </script>
+
 </body>
 </html>
