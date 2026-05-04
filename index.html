@@ -4,11 +4,12 @@
     <title>Login</title>
 </head>
 <body>
+
     <h2>Halaman Login</h2>
 
-    <form onsubmit="loginUser(event)">
-        <label>Username:</label><br>
-        <input type="text" id="username" required><br><br>
+    <form id="formLogin">
+        <label>Email:</label><br>
+        <input type="email" id="email" required><br><br>
 
         <label>Password:</label><br>
         <input type="password" id="password" required><br><br>
@@ -18,22 +19,36 @@
 
     <p>Belum punya akun? <a href="register.html">Daftar</a></p>
 
-    <script>
-        function loginUser(e){
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+            authDomain: "iothsym.firebaseapp.com",
+            projectId: "iothsym",
+            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        document.getElementById("formLogin").addEventListener("submit", function(e){
             e.preventDefault();
 
-            let user = document.getElementById("username").value;
-            let pass = document.getElementById("password").value;
+            let email = document.getElementById("email").value.trim();
+            let password = document.getElementById("password").value.trim();
 
-            let storedUser = localStorage.getItem("username");
-            let storedPass = localStorage.getItem("password");
-
-            if(user === storedUser && pass === storedPass){
-                window.location.href = "data.html";
-            } else {
-                alert("Login gagal!");
-            }
-        }
+            signInWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                alert("Login berhasil!");
+                window.location.href = "dashboard.html"; // 🔥 langsung ke dashboard
+            })
+            .catch((error) => {
+                alert("Login gagal: " + error.message);
+            });
+        });
     </script>
+
 </body>
 </html>
