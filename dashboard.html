@@ -5,30 +5,25 @@
 </head>
 <body>
 
-    <h2>Dashboard Pengguna</h2>
+    <h2>Dashboard</h2>
 
-    <!-- INFO USER -->
-    <p id="userInfo"></p>
+    <p id="userInfo">Loading...</p>
 
     <hr>
 
-    <!-- RINGKASAN -->
-    <h3>Ringkasan Data</h3>
+    <h3>Ringkasan</h3>
     <p>Total Data: <span id="total">0</span></p>
     <p>Normal: <span id="normal">0</span></p>
     <p>Stres: <span id="stres">0</span></p>
 
     <hr>
 
-    <!-- MENU -->
-    <button onclick="window.location.href='data.html'">Isi Data</button>
-    <button onclick="window.location.href='record.html'">Lihat Record</button>
+    <button onclick="keData()">Isi Data</button>
+    <button onclick="keRecord()">Lihat Record</button>
     <button onclick="logout()">Logout</button>
 
     <hr>
 
-    <!-- TABEL RINGKAS -->
-    <h3>Data Terakhir</h3>
     <table border="1">
         <thead>
             <tr>
@@ -40,7 +35,6 @@
         <tbody id="tabel"></tbody>
     </table>
 
-    <!-- FIREBASE -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -57,19 +51,22 @@
 
         const tabel = document.getElementById("tabel");
 
-        // 🔐 cek login
+        // 🔐 CEK LOGIN
         onAuthStateChanged(auth, (user) => {
-            if(user){
-                document.getElementById("userInfo").innerHTML =
+            console.log("CEK USER:", user);
+
+            if (user) {
+                document.getElementById("userInfo").innerText =
                     "Login sebagai: " + user.email;
 
                 loadData();
             } else {
+                alert("Belum login!");
                 window.location.href = "index.html";
             }
         });
 
-        // 🔥 load data dari localStorage
+        // 🔥 LOAD DATA
         function loadData(){
             let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
@@ -85,7 +82,6 @@
                 if(status === "Normal") normal++;
                 else stres++;
 
-                // tampilkan max 5 data terakhir
                 if(i >= data.length - 5){
                     tabel.innerHTML += `
                         <tr>
@@ -102,7 +98,15 @@
             document.getElementById("stres").innerText = stres;
         }
 
-        // 🔥 logout
+        // 🔥 NAVIGASI (WAJIB global)
+        window.keData = function(){
+            window.location.href = "data.html";
+        }
+
+        window.keRecord = function(){
+            window.location.href = "record.html";
+        }
+
         window.logout = function(){
             signOut(auth).then(() => {
                 alert("Logout berhasil");
