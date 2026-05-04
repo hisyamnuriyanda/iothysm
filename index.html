@@ -7,8 +7,8 @@
     <h2>Halaman Login</h2>
 
     <form onsubmit="loginUser(event)">
-        <label>Email:</label><br>
-        <input type="email" id="username" required><br><br>
+        <label>Username:</label><br>
+        <input type="text" id="username" required><br><br>
 
         <label>Password:</label><br>
         <input type="password" id="password" required><br><br>
@@ -18,34 +18,22 @@
 
     <p>Belum punya akun? <a href="register.html">Daftar</a></p>
 
-    <!-- Firebase SDK -->
- <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    <script>
+        function loginUser(e){
+            e.preventDefault();
 
+            let user = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
 
+            let storedUser = localStorage.getItem("username");
+            let storedPass = localStorage.getItem("password");
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-window.loginUser = function(e){
-    e.preventDefault();
-
-    let username = document.getElementById("username").value.trim();
-    let password = document.getElementById("password").value.trim();
-
-    let email = username + "@app.com"; // 🔥 trik
-
-    signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-        alert("Login berhasil!");
-        window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-        alert("Login gagal: " + error.message);
-    });
-}
-
+            if(user === storedUser && pass === storedPass){
+                window.location.href = "data.html";
+            } else {
+                alert("Login gagal!");
+            }
+        }
     </script>
 </body>
 </html>
