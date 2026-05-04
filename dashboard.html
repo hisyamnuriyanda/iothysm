@@ -51,18 +51,21 @@
 
         const tabel = document.getElementById("tabel");
 
-        // 🔐 CEK LOGIN
+        // 🔐 CEK LOGIN (FIX DELAY)
         onAuthStateChanged(auth, (user) => {
-            console.log("CEK USER:", user);
-
             if (user) {
                 document.getElementById("userInfo").innerText =
                     "Login sebagai: " + user.email;
 
                 loadData();
             } else {
-                alert("Belum login!");
-                window.location.href = "index.html";
+                // 🔥 beri waktu Firebase membaca session
+                setTimeout(() => {
+                    if (!auth.currentUser) {
+                        alert("Belum login!");
+                        window.location.href = "index.html";
+                    }
+                }, 1000);
             }
         });
 
@@ -82,6 +85,7 @@
                 if(status === "Normal") normal++;
                 else stres++;
 
+                // tampilkan 5 data terakhir
                 if(i >= data.length - 5){
                     tabel.innerHTML += `
                         <tr>
@@ -98,7 +102,7 @@
             document.getElementById("stres").innerText = stres;
         }
 
-        // 🔥 NAVIGASI (WAJIB global)
+        // 🔥 NAVIGASI
         window.keData = function(){
             window.location.href = "data.html";
         }
