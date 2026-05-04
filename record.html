@@ -4,9 +4,20 @@
     <title>Record</title>
 </head>
 <body>
+
     <h2>Data Tersimpan</h2>
 
-    <table border="1">
+    <!-- ✅ tombol selesai -->
+    <button onclick="selesai()">Selesai</button>
+
+    <!-- ✅ tombol download (awal disable) -->
+    <button id="btnDownload" onclick="downloadExcel()" disabled>
+        Download Excel
+    </button>
+
+    <br><br>
+
+    <table border="1" id="tabelData">
         <thead>
             <tr>
                 <th>Nama</th>
@@ -21,9 +32,9 @@
 
     <script>
         let tabel = document.getElementById("tabel");
-
         let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
+        // 🔹 tampilkan data
         data.forEach(d => {
             let status = Math.random() > 0.5 ? "Normal" : "Stres";
 
@@ -37,6 +48,34 @@
                 </tr>
             `;
         });
+
+        // 🔥 tombol selesai
+        function selesai(){
+            alert("Proses selesai! Sekarang bisa download.");
+
+            document.getElementById("btnDownload").disabled = false;
+        }
+
+        // 🔥 download excel
+        function downloadExcel(){
+            let table = document.getElementById("tabelData");
+
+            let html = table.outerHTML;
+
+            let blob = new Blob([html], {
+                type: "application/vnd.ms-excel"
+            });
+
+            let url = URL.createObjectURL(blob);
+
+            let a = document.createElement("a");
+            a.href = url;
+            a.download = "data_penggunaan.xls";
+            a.click();
+
+            URL.revokeObjectURL(url);
+        }
     </script>
+
 </body>
 </html>
