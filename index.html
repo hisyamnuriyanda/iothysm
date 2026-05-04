@@ -45,34 +45,7 @@ window.loginUser = function(e){
         alert("Login gagal: " + error.message);
     });
 }
-</script>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // fungsi login
-        window.loginUser = function(e){
-            e.preventDefault();
-
-            let email = document.getElementById("username").value.trim();
-            let password = document.getElementById("password").value.trim();
-
-            signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                alert("Login berhasil!");
-                window.location.href = "dashboard.html";
-            })
-            .catch((error) => {
-                alert("Login gagal: " + error.message);
-            });
-        }
     </script>
 </body>
 </html>
