@@ -19,8 +19,9 @@
             <option value="Perempuan">Perempuan</option>
         </select><br><br>
 
-        <label>Tanggal:</label><br>
-        <input type="date" id="tanggal" required><br><br>
+        <label>Tanggal Pemakaian:</label><br>
+        <!-- ✅ FIX: tidak pakai spasi -->
+        <input type="date" id="tanggal_pemakaian" required><br><br>
 
         <button type="submit">Simpan</button>
     </form>
@@ -46,19 +47,19 @@
 
         // 🔐 Cek login
         onAuthStateChanged(auth, (user) => {
-            if(user){
+            if (user) {
                 currentUser = user;
             } else {
                 setTimeout(() => {
-                    if(!auth.currentUser){
-                        alert("Silakan login dulu!");
+                    if (!auth.currentUser) {
+                        alert("Silakan login terlebih dahulu!");
                         window.location.href = "index.html";
                     }
                 }, 1000);
             }
         });
 
-        // 💾 Simpan data lalu pindah halaman
+        // 💾 Simpan data
         window.simpanData = async function(e){
             e.preventDefault();
 
@@ -70,7 +71,9 @@
             let nama = document.getElementById("nama").value.trim();
             let umur = document.getElementById("umur").value;
             let gender = document.getElementById("gender").value;
-            let tanggal = document.getElementById("tanggal").value;
+
+            // ✅ ambil tanggal pemakaian
+            let tanggalPemakaian = document.getElementById("tanggal_pemakaian").value;
 
             try {
                 await addDoc(collection(db, "data_diri"), {
@@ -79,14 +82,16 @@
                     nama: nama,
                     umur: umur,
                     gender: gender,
-                    tanggal: tanggal,
+                    tanggal_pemakaian: tanggalPemakaian,
                     created_at: new Date()
                 });
 
                 alert("Data berhasil disimpan!");
 
-                // 👉 PINDAH KE HALAMAN RECORD
-                window.location.href = "record.html";
+                // redirect ke record
+                setTimeout(() => {
+                    window.location.href = "record.html";
+                }, 300);
 
             } catch (error) {
                 alert("Gagal menyimpan: " + error.message);
