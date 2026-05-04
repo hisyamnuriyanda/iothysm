@@ -20,7 +20,7 @@
         </select><br><br>
 
         <label>Tanggal:</label><br>
-        <input type="date" id="tanggal Pemakaian" required><br><br>
+        <input type="date" id="tanggal" required><br><br>
 
         <button type="submit">Simpan</button>
     </form>
@@ -44,23 +44,21 @@
 
         let currentUser = null;
 
-        // 🔐 Cek login (FIX DELAY)
+        // 🔐 Cek login
         onAuthStateChanged(auth, (user) => {
-            if (user) {
+            if(user){
                 currentUser = user;
-                console.log("User login:", user.email);
             } else {
-                // beri waktu Firebase membaca session
                 setTimeout(() => {
-                    if (!auth.currentUser) {
-                        alert("Silakan login terlebih dahulu!");
+                    if(!auth.currentUser){
+                        alert("Silakan login dulu!");
                         window.location.href = "index.html";
                     }
                 }, 1000);
             }
         });
 
-        // 💾 Simpan data ke Firestore
+        // 💾 Simpan data lalu pindah halaman
         window.simpanData = async function(e){
             e.preventDefault();
 
@@ -86,6 +84,8 @@
                 });
 
                 alert("Data berhasil disimpan!");
+
+                // 👉 PINDAH KE HALAMAN RECORD
                 window.location.href = "record.html";
 
             } catch (error) {
