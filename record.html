@@ -7,10 +7,8 @@
 
     <h2>Data Tersimpan</h2>
 
-    <!-- ✅ tombol selesai -->
+    <!-- tombol -->
     <button onclick="selesai()">Selesai</button>
-
-    <!-- ✅ tombol download (awal disable) -->
     <button id="btnDownload" onclick="downloadExcel()" disabled>
         Download Excel
     </button>
@@ -24,7 +22,9 @@
                 <th>Umur</th>
                 <th>Gender</th>
                 <th>Tanggal</th>
+                <th>Waktu</th>
                 <th>Status</th>
+                <th>Aksi</th>
             </tr>
         </thead>
         <tbody id="tabel"></tbody>
@@ -34,32 +34,84 @@
         let tabel = document.getElementById("tabel");
         let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
-        // 🔹 tampilkan data
-        data.forEach(d => {
-            let status = Math.random() > 0.5 ? "Normal" : "Stres";
+        // 🔥 fungsi render ulang tabel
+        function tampilkanData(){
+            tabel.innerHTML = "";
 
-            tabel.innerHTML += `
-                <tr>
-                    <td>${d.nama}</td>
-                    <td>${d.umur}</td>
-                    <td>${d.gender}</td>
-                    <td>${d.tanggal}</td>
-                    <td>${status}</td>
-                </tr>
-            `;
+            data.forEach((d, index) => {
+                let status = Math.random() > 0.5 ? "Normal" : "Stres";
+
+                tabel.innerHTML += `
+                    <tr>
+                        <td>${d.nama}</td>
+                        <td>${d.umur}</td>
+                        <td>${d.gender}</td>
+                        <td>${d.tanggal}</td>
+                        <td>${d.waktu}</td>
+                        <td>${status}</td>
+                        <td>
+                            <button onclick="editData(${index})">Edit</button>
+                            <button onclick="hapusData(${index})">Hapus</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 🔥 tambah waktu otomatis jika belum ada
+        data = data.map(d => {
+            if(!d.waktu){
+                let now = new Date();
+                d.waktu = now.toLocaleTimeString();
+            }
+            return d;
         });
+
+        localStorage.setItem("dataDiri", JSON.stringify(data));
+
+        tampilkanData();
+
+        // 🔥 EDIT DATA
+        function editData(index){
+            let d = data[index];
+
+            let nama = prompt("Edit Nama:", d.nama);
+            let umur = prompt("Edit Umur:", d.umur);
+            let gender = prompt("Edit Gender:", d.gender);
+            let tanggal = prompt("Edit Tanggal:", d.tanggal);
+
+            if(nama && umur && gender && tanggal){
+                data[index] = {
+                    ...d,
+                    nama,
+                    umur,
+                    gender,
+                    tanggal
+                };
+
+                localStorage.setItem("dataDiri", JSON.stringify(data));
+                tampilkanData();
+            }
+        }
+
+        // 🔥 HAPUS DATA
+        function hapusData(index){
+            if(confirm("Yakin ingin menghapus data?")){
+                data.splice(index, 1);
+                localStorage.setItem("dataDiri", JSON.stringify(data));
+                tampilkanData();
+            }
+        }
 
         // 🔥 tombol selesai
         function selesai(){
             alert("Proses selesai! Sekarang bisa download.");
-
             document.getElementById("btnDownload").disabled = false;
         }
 
         // 🔥 download excel
         function downloadExcel(){
             let table = document.getElementById("tabelData");
-
             let html = table.outerHTML;
 
             let blob = new Blob([html], {
