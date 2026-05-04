@@ -19,9 +19,38 @@
     <p>Belum punya akun? <a href="register.html">Daftar</a></p>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+ <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+    authDomain: "iothsym.firebaseapp.com",
+    projectId: "iothsym",
+    appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.loginUser = function(e){
+    e.preventDefault();
+
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
+
+    let email = username + "@app.com"; // 🔥 trik
+
+    signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+        alert("Login berhasil!");
+        window.location.href = "dashboard.html";
+    })
+    .catch((error) => {
+        alert("Login gagal: " + error.message);
+    });
+}
+</script>
 
         const firebaseConfig = {
             apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
