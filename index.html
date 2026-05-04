@@ -43,7 +43,7 @@
             signInWithEmailAndPassword(auth, email, password)
             .then(() => {
                 alert("Login berhasil!");
-                window.location.href = "data.html";
+                window.location.href = "dashboard.html";
             })
             .catch((error) => {
                 alert("Login gagal: " + error.message);
