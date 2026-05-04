@@ -19,9 +19,8 @@
             <option value="Perempuan">Perempuan</option>
         </select><br><br>
 
-        <label>Tanggal Pemakaian:</label><br>
-        <!-- ✅ FIX: tidak pakai spasi -->
-        <input type="date" id="tanggal_pemakaian" required><br><br>
+        <label>Tanggal:</label><br>
+        <input type="date" id="tanggal" required><br><br>
 
         <button type="submit">Simpan</button>
     </form>
@@ -45,11 +44,13 @@
 
         let currentUser = null;
 
-        // 🔐 Cek login
+        // 🔐 Cek login (FIX DELAY)
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
+                console.log("User login:", user.email);
             } else {
+                // beri waktu Firebase membaca session
                 setTimeout(() => {
                     if (!auth.currentUser) {
                         alert("Silakan login terlebih dahulu!");
@@ -59,7 +60,7 @@
             }
         });
 
-        // 💾 Simpan data
+        // 💾 Simpan data ke Firestore
         window.simpanData = async function(e){
             e.preventDefault();
 
@@ -71,9 +72,7 @@
             let nama = document.getElementById("nama").value.trim();
             let umur = document.getElementById("umur").value;
             let gender = document.getElementById("gender").value;
-
-            // ✅ ambil tanggal pemakaian
-            let tanggalPemakaian = document.getElementById("tanggal_pemakaian").value;
+            let tanggal = document.getElementById("tanggal").value;
 
             try {
                 await addDoc(collection(db, "data_diri"), {
@@ -82,16 +81,12 @@
                     nama: nama,
                     umur: umur,
                     gender: gender,
-                    tanggal_pemakaian: tanggalPemakaian,
+                    tanggal: tanggal,
                     created_at: new Date()
                 });
 
                 alert("Data berhasil disimpan!");
-
-                // redirect ke record
-                setTimeout(() => {
-                    window.location.href = "record.html";
-                }, 300);
+                window.location.href = "record.html";
 
             } catch (error) {
                 alert("Gagal menyimpan: " + error.message);
