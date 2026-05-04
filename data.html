@@ -44,12 +44,19 @@
 
         let currentUser = null;
 
-        // 🔐 Proteksi halaman
+        // 🔐 Cek login (FIX DELAY)
         onAuthStateChanged(auth, (user) => {
-            if(user){
+            if (user) {
                 currentUser = user;
+                console.log("User login:", user.email);
             } else {
-                window.location.href = "index.html";
+                // beri waktu Firebase membaca session
+                setTimeout(() => {
+                    if (!auth.currentUser) {
+                        alert("Silakan login terlebih dahulu!");
+                        window.location.href = "index.html";
+                    }
+                }, 1000);
             }
         });
 
@@ -62,7 +69,7 @@
                 return;
             }
 
-            let nama = document.getElementById("nama").value;
+            let nama = document.getElementById("nama").value.trim();
             let umur = document.getElementById("umur").value;
             let gender = document.getElementById("gender").value;
             let tanggal = document.getElementById("tanggal").value;
@@ -83,6 +90,7 @@
 
             } catch (error) {
                 alert("Gagal menyimpan: " + error.message);
+                console.error(error);
             }
         }
     </script>
