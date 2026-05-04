@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+
+    <h2>Dashboard Pengguna</h2>
+
+    <!-- INFO USER -->
+    <p id="userInfo"></p>
+
+    <hr>
+
+    <!-- RINGKASAN -->
+    <h3>Ringkasan Data</h3>
+    <p>Total Data: <span id="total">0</span></p>
+    <p>Normal: <span id="normal">0</span></p>
+    <p>Stres: <span id="stres">0</span></p>
+
+    <hr>
+
+    <!-- MENU -->
+    <button onclick="window.location.href='data.html'">Isi Data</button>
+    <button onclick="window.location.href='record.html'">Lihat Record</button>
+    <button onclick="logout()">Logout</button>
+
+    <hr>
+
+    <!-- TABEL RINGKAS -->
+    <h3>Data Terakhir</h3>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tabel"></tbody>
+    </table>
+
+    <!-- FIREBASE -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+            authDomain: "iothsym.firebaseapp.com",
+            projectId: "iothsym",
+            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const tabel = document.getElementById("tabel");
+
+        // 🔐 cek login
+        onAuthStateChanged(auth, (user) => {
+            if(user){
+                document.getElementById("userInfo").innerHTML =
+                    "Login sebagai: " + user.email;
+
+                loadData();
+            } else {
+                window.location.href = "index.html";
+            }
+        });
+
+        // 🔥 load data dari localStorage
+        function loadData(){
+            let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
+
+            let total = data.length;
+            let normal = 0;
+            let stres = 0;
+
+            tabel.innerHTML = "";
+
+            data.forEach((d, i) => {
+                let status = Math.random() > 0.5 ? "Normal" : "Stres";
+
+                if(status === "Normal") normal++;
+                else stres++;
+
+                // tampilkan max 5 data terakhir
+                if(i >= data.length - 5){
+                    tabel.innerHTML += `
+                        <tr>
+                            <td>${d.nama}</td>
+                            <td>${d.tanggal}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `;
+                }
+            });
+
+            document.getElementById("total").innerText = total;
+            document.getElementById("normal").innerText = normal;
+            document.getElementById("stres").innerText = stres;
+        }
+
+        // 🔥 logout
+        window.logout = function(){
+            signOut(auth).then(() => {
+                alert("Logout berhasil");
+                window.location.href = "index.html";
+            });
+        }
+    </script>
+
+</body>
+</html>
