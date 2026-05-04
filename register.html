@@ -1,57 +1,32 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h2>Halaman Register</h2>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    <form onsubmit="registerUser(event)">
-        <label>Email:</label><br>
-        <input type="email" id="username" required><br><br>
+const firebaseConfig = {
+    apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+    authDomain: "iothsym.firebaseapp.com",
+    projectId: "iothsym",
+    appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+};
 
-        <label>Password:</label><br>
-        <input type="password" id="password" required><br><br>
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-        <button type="submit">Daftar</button>
-    </form>
+window.registerUser = function(e){
+    e.preventDefault();
 
-    <p>Sudah punya akun? <a href="index.html">Login</a></p>
+    let username = document.getElementById("username").value.trim();
+    let password = document.getElementById("password").value.trim();
 
-    <!-- Firebase SDK (versi modern) -->
-    <script type="module">
-        // Import Firebase
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    let email = username + "@app.com"; // 🔥 trik
 
-        // 🔴 GANTI dengan config Firebase kamu
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
-
-        // Inisialisasi Firebase
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        // Fungsi Register
-        window.registerUser = function(e){
-            e.preventDefault();
-
-            let email = document.getElementById("username").value;
-            let password = document.getElementById("password").value;
-
-            createUserWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                alert("Registrasi berhasil!");
-                window.location.href = "index.html";
-            })
-            .catch((error) => {
-                alert("Error: " + error.message);
-            });
-        }
-    </script>
-</body>
-</html>
+    createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+        alert("Registrasi berhasil!");
+        window.location.href = "index.html";
+    })
+    .catch((error) => {
+        alert("Error: " + error.message);
+    });
+}
+</script>
