@@ -1,74 +1,19 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Record</title>
-</head>
-<body>
-    <h2>Data Tersimpan</h2>
+<script>
+let tabel = document.getElementById("tabel");
 
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Umur</th>
-                <th>Gender</th>
-                <th>Tanggal</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody id="tabel"></tbody>
-    </table>
+let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
-    <!-- Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+data.forEach(d => {
+    let status = Math.random() > 0.5 ? "Normal" : "Stres";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const tabel = document.getElementById("tabel");
-
-        // cek user login
-        onAuthStateChanged(auth, async (user) => {
-            if(user){
-                const q = query(
-                    collection(db, "data_diri"),
-                    where("uid", "==", user.uid)
-                );
-
-                const querySnapshot = await getDocs(q);
-
-                querySnapshot.forEach((doc) => {
-                    let d = doc.data();
-
-                    let status = Math.random() > 0.5 ? "Normal" : "Stres";
-
-                    tabel.innerHTML += `
-                        <tr>
-                            <td>${d.nama}</td>
-                            <td>${d.umur}</td>
-                            <td>${d.gender}</td>
-                            <td>${d.tanggal}</td>
-                            <td>${status}</td>
-                        </tr>
-                    `;
-                });
-
-            } else {
-                // kalau belum login → balik ke login
-                window.location.href = "index.html";
-            }
-        });
-    </script>
-</body>
-</html>
+    tabel.innerHTML += `
+        <tr>
+            <td>${d.nama}</td>
+            <td>${d.umur}</td>
+            <td>${d.gender}</td>
+            <td>${d.tanggal}</td>
+            <td>${status}</td>
+        </tr>
+    `;
+});
+</script>
