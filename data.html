@@ -75,15 +75,22 @@
             let tanggal = document.getElementById("tanggal").value;
 
             try {
-                await addDoc(collection(db, "data_diri"), {
-                    uid: currentUser.uid,
-                    email: currentUser.email,
-                    nama: nama,
-                    umur: umur,
-                    gender: gender,
-                    tanggal: tanggal,
-                    created_at: new Date()
-                });
+    		await addDoc(collection(db, "data_diri"), {
+   		uid: currentUser.uid,
+   		email: currentUser.email,
+   		nama: nama,
+   		umur: umur,
+ 		gender: gender,
+    		tanggal: tanggal,
+    		created_at: new Date()
+		});
+
+		alert("Data berhasil disimpan!");
+
+		// beri jeda agar proses Firebase selesai
+		setTimeout(() => {
+  		window.location.href = "record.html";
+		}, 300);
 
                 alert("Data berhasil disimpan!");
                 window.location.href = "record.html";
