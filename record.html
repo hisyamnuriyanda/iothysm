@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Record</title>
+</head>
+<body>
+    <h2>Data Tersimpan</h2>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nama</th>
+                <th>Umur</th>
+                <th>Gender</th>
+                <th>Tanggal</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody id="tabel"></tbody>
+    </table>
+
+    <script>
+        let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
+        let tabel = document.getElementById("tabel");
+
+        data.forEach(d => {
+            let status = Math.random() > 0.5 ? "Normal" : "Stres";
+
+            tabel.innerHTML += `
+                <tr>
+                    <td>${d.nama}</td>
+                    <td>${d.umur}</td>
+                    <td>${d.gender}</td>
+                    <td>${d.tanggal}</td>
+                    <td>${status}</td>
+                </tr>
+            `;
+        });
+    </script>
+</body>
+</html>
