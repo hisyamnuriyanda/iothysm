@@ -51,23 +51,33 @@
 
         const tabel = document.getElementById("tabel");
 
-        // 🔐 CEK LOGIN (FIX DELAY)
+        // 🔐 CEK LOGIN (FIX DELAY) 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById("userInfo").innerText =
-                    "Login sebagai: " + user.email;
+    if (user) {
 
-                loadData();
-            } else {
-                // 🔥 beri waktu Firebase membaca session
-                setTimeout(() => {
-                    if (!auth.currentUser) {
-                        alert("Belum login!");
-                        window.location.href = "index.html";
-                    }
-                }, 1000);
+        // 🔥 ambil biodata berdasarkan UID
+        let biodata = JSON.parse(localStorage.getItem("biodata_" + user.uid));
+
+        // 🔥 tampilkan nama jika ada
+        if(biodata){
+            document.getElementById("userInfo").innerText =
+                "Selamat datang, " + biodata.nama;
+        } else {
+            document.getElementById("userInfo").innerText =
+                "Login sebagai: " + user.email;
+        }
+
+        loadData();
+
+    } else {
+        setTimeout(() => {
+            if (!auth.currentUser) {
+                alert("Belum login!");
+                window.location.href = "index.html";
             }
-        });
+        }, 1000);
+    }
+});
 
         // 🔥 LOAD DATA
         function loadData(){
