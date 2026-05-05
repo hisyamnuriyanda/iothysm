@@ -27,55 +27,62 @@
     </form>
 
     <!-- 🔥 SCRIPT -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+   <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
+const firebaseConfig = {
+    apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+    authDomain: "iothsym.firebaseapp.com",
+    projectId: "iothsym",
+    appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-        // 🔐 CEK LOGIN
-        onAuthStateChanged(auth, (user) => {
-            if (!user) {
-                alert("Silakan login terlebih dahulu!");
-                window.location.href = "index.html";
-            }
-        });
+let currentUser = null;
 
-        // 💾 SIMPAN DATA
-        document.getElementById("formData").addEventListener("submit", function(e){
-            e.preventDefault();
+// 🔐 cek login
+onAuthStateChanged(auth, (user) => {
+    if (user) {
+        currentUser = user;
 
-            console.log("SIMPAN DIKLIK");
+        // 🔥 CEK apakah biodata sudah ada
+        let biodata = JSON.parse(localStorage.getItem("biodata_" + user.uid));
 
-            let nama = document.getElementById("nama").value.trim();
-            let umur = document.getElementById("umur").value;
-            let gender = document.getElementById("gender").value;
-            let tanggal = document.getElementById("tanggal").value;
+        if(biodata){
+            alert("Biodata sudah diisi!");
+            window.location.href = "dashboard.html";
+        }
 
-            let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
+    } else {
+        window.location.href = "index.html";
+    }
+});
 
-            data.push({
-                nama: nama,
-                umur: umur,
-                gender: gender,
-                tanggal: tanggal
-            });
+// 💾 simpan biodata (sekali saja)
+window.simpanData = function(e){
+    e.preventDefault();
 
-            localStorage.setItem("dataDiri", JSON.stringify(data));
+    let nama = document.getElementById("nama").value.trim();
+    let umur = document.getElementById("umur").value;
+    let gender = document.getElementById("gender").value;
+    let tanggal = document.getElementById("tanggal").value;
 
-            alert("Data berhasil disimpan!");
+    let key = "biodata_" + currentUser.uid;
 
-            // ✅ LANGSUNG PINDAH
-            window.location.href = "record.html";
-        });
-    </script>
+    localStorage.setItem(key, JSON.stringify({
+        nama,
+        umur,
+        gender,
+        tanggal
+    }));
+
+    alert("Biodata berhasil disimpan!");
+
+    window.location.href = "dashboard.html";
+}
+</script>
 </body>
 </html>
