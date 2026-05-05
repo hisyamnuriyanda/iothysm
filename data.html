@@ -7,7 +7,7 @@
     <h2>Isi Data Diri</h2>
 
     <!-- ✅ FORM -->
-    <form id="formData">
+    <form id="formData" onsubmit="simpanData(event)">
         <label>Nama:</label><br>
         <input type="text" id="nama" required><br><br>
 
@@ -27,62 +27,67 @@
     </form>
 
     <!-- 🔥 SCRIPT -->
-   <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-    authDomain: "iothsym.firebaseapp.com",
-    projectId: "iothsym",
-    appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
+        authDomain: "iothsym.firebaseapp.com",
+        projectId: "iothsym",
+        appId: "1:747762617946:web:ceceb7658982c7ecb99263"
+    };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-let currentUser = null;
+    let currentUser = null;
 
-// 🔐 cek login
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        currentUser = user;
+    // 🔐 cek login
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            currentUser = user;
 
-        // 🔥 CEK apakah biodata sudah ada
-        let biodata = JSON.parse(localStorage.getItem("biodata_" + user.uid));
+            // 🔥 CEK apakah biodata sudah ada
+            let biodata = JSON.parse(localStorage.getItem("biodata_" + user.uid));
 
-        if(biodata){
-            alert("Biodata sudah diisi!");
-            window.location.href = "dashboard.html";
+            if(biodata){
+                alert("Biodata sudah diisi!");
+                window.location.href = "dashboard.html";
+            }
+
+        } else {
+            window.location.href = "index.html";
+        }
+    });
+
+    // 💾 simpan biodata
+    window.simpanData = function(e){
+        e.preventDefault();
+
+        if(!currentUser){
+            alert("User belum login!");
+            return;
         }
 
-    } else {
-        window.location.href = "index.html";
+        let nama = document.getElementById("nama").value.trim();
+        let umur = document.getElementById("umur").value;
+        let gender = document.getElementById("gender").value;
+        let tanggal = document.getElementById("tanggal").value;
+
+        let key = "biodata_" + currentUser.uid;
+
+        localStorage.setItem(key, JSON.stringify({
+            nama,
+            umur,
+            gender,
+            tanggal
+        }));
+
+        alert("Biodata berhasil disimpan!");
+
+        window.location.href = "dashboard.html";
     }
-});
-
-// 💾 simpan biodata (sekali saja)
-window.simpanData = function(e){
-    e.preventDefault();
-
-    let nama = document.getElementById("nama").value.trim();
-    let umur = document.getElementById("umur").value;
-    let gender = document.getElementById("gender").value;
-    let tanggal = document.getElementById("tanggal").value;
-
-    let key = "biodata_" + currentUser.uid;
-
-    localStorage.setItem(key, JSON.stringify({
-        nama,
-        umur,
-        gender,
-        tanggal
-    }));
-
-    alert("Biodata berhasil disimpan!");
-
-    window.location.href = "dashboard.html";
-}
-</script>
+    </script>
 </body>
 </html>
