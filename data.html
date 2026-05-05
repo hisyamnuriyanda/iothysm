@@ -4,10 +4,9 @@
     <title>Isi Biodata</title>
 </head>
 <body>
-
     <h2>Isi Data Diri</h2>
 
-    <!-- FORM -->
+    <!-- ✅ FORM -->
     <form id="formData">
         <label>Nama:</label><br>
         <input type="text" id="nama" required><br><br>
@@ -27,6 +26,7 @@
         <button type="submit">Simpan</button>
     </form>
 
+    <!-- 🔥 SCRIPT -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -41,54 +41,41 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
 
-        let currentUser = null;
-
-        // 🔐 cek login
+        // 🔐 CEK LOGIN
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-
-                let key = "biodata_" + user.uid;
-                let biodata = JSON.parse(localStorage.getItem(key));
-
-                // 🔥 jika sudah ada → isi ke form (MODE EDIT)
-                if (biodata) {
-                    document.getElementById("nama").value = biodata.nama;
-                    document.getElementById("umur").value = biodata.umur;
-                    document.getElementById("gender").value = biodata.gender;
-                    document.getElementById("tanggal").value = biodata.tanggal;
-                }
-
-            } else {
+            if (!user) {
+                alert("Silakan login terlebih dahulu!");
                 window.location.href = "index.html";
             }
         });
 
-        // 🔥 EVENT FORM (INI YANG SEBELUMNYA HILANG)
+        // 💾 SIMPAN DATA
         document.getElementById("formData").addEventListener("submit", function(e){
             e.preventDefault();
+
+            console.log("SIMPAN DIKLIK");
 
             let nama = document.getElementById("nama").value.trim();
             let umur = document.getElementById("umur").value;
             let gender = document.getElementById("gender").value;
             let tanggal = document.getElementById("tanggal").value;
 
-            let key = "biodata_" + currentUser.uid;
+            let data = JSON.parse(localStorage.getItem("dataDiri")) || [];
 
-            // 🔥 SIMPAN (overwrite = edit)
-            localStorage.setItem(key, JSON.stringify({
-                nama,
-                umur,
-                gender,
-                tanggal
-            }));
+            data.push({
+                nama: nama,
+                umur: umur,
+                gender: gender,
+                tanggal: tanggal
+            });
 
-            alert("Biodata berhasil disimpan!");
+            localStorage.setItem("dataDiri", JSON.stringify(data));
 
-            window.location.href = "dashboard.html";
+            alert("Data berhasil disimpan!");
+
+            // ✅ LANGSUNG PINDAH
+            window.location.href = "record.html";
         });
-
     </script>
-
 </body>
 </html>
