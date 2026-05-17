@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>DASHBOARD</h2>
+
+<p id="user"></p>
+
+<div class="menu">
+
+<a href="biodata.html">
+<button>Isi Biodata</button>
+</a>
+
+<a href="monitoring.html">
+<button>Monitoring</button>
+</a>
+
+<a href="history.html">
+<button>History</button>
+</a>
+
+<button id="logout">
+Logout
+</button>
+
+</div>
+
+</div>
+
+<script type="module">
+
+import { auth } from './firebase.js';
+
+import {
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+onAuthStateChanged(auth,(user)=>{
+
+if(user){
+
+document.getElementById("user")
+.innerHTML =
+"Login sebagai : " + user.email;
+
+}else{
+
+window.location.href = "index.html";
+
+}
+
+});
+
+document
+.getElementById("logout")
+.addEventListener("click", async()=>{
+
+await signOut(auth);
+
+window.location.href =
+"index.html";
+
+});
+
+</script>
+
+</body>
+</html>
