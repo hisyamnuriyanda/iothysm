@@ -2,53 +2,84 @@
 <html>
 <head>
     <title>Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h2>Halaman Login</h2>
+<div class="container">
 
-    <form id="formLogin">
-        <label>Email:</label><br>
-        <input type="email" id="email" required><br><br>
+    <h2>LOGIN</h2>
 
-        <label>Password:</label><br>
-        <input type="password" id="password" required><br><br>
+    <form id="loginForm">
 
-        <button type="submit">Login</button>
+        <input type="email"
+        id="email"
+        placeholder="Email"
+        required>
+
+        <input type="password"
+        id="password"
+        placeholder="Password"
+        required>
+
+        <button type="submit">
+            Login
+        </button>
+
     </form>
 
-    <p>Belum punya akun? <a href="register.html">Daftar</a></p>
+    <p>
+        Belum punya akun?
+        <a href="register.html">
+            Register
+        </a>
+    </p>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+</div>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyD6N0Mn2eQFgtYzfGSN0vVec7gf1IVe9eI",
-            authDomain: "iothsym.firebaseapp.com",
-            projectId: "iothsym",
-            appId: "1:747762617946:web:ceceb7658982c7ecb99263"
-        };
+<script type="module">
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
+import { auth } from './firebase.js';
 
-        document.getElementById("formLogin").addEventListener("submit", function(e){
-            e.preventDefault();
+import {
+signInWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-            let email = document.getElementById("email").value.trim();
-            let password = document.getElementById("password").value.trim();
+document
+.getElementById("loginForm")
+.addEventListener("submit", async(e)=>{
 
-            signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
-                alert("Login berhasil!");
-                window.location.href = "dashboard.html"; // 🔥 langsung ke dashboard
-            })
-            .catch((error) => {
-                alert("Login gagal: " + error.message);
-            });
-        });
-    </script>
+    e.preventDefault();
+
+    let email =
+    document.getElementById("email").value;
+
+    let password =
+    document.getElementById("password").value;
+
+    try{
+
+        await signInWithEmailAndPassword(
+            auth,
+            email,
+            password
+        );
+
+        alert("Login berhasil");
+
+        window.location.href =
+        "dashboard.html";
+
+    }catch(error){
+
+        alert(error.message);
+
+    }
+
+});
+
+</script>
 
 </body>
 </html>
