@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>HISTORY</h2>
+
+<table border="1">
+
+<thead>
+<tr>
+<th>GSR</th>
+<th>HRV</th>
+<th>Status</th>
+</tr>
+</thead>
+
+<tbody id="tabel"></tbody>
+
+</table>
+
+</div>
+
+<script type="module">
+
+import { db } from './firebase.js';
+
+import {
+ref,
+onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const tabel =
+document.getElementById("tabel");
+
+onValue(ref(db,'history'),
+(snapshot)=>{
+
+tabel.innerHTML = "";
+
+snapshot.forEach((child)=>{
+
+let d = child.val();
+
+tabel.innerHTML += `
+<tr>
+<td>${d.gsr}</td>
+<td>${d.hrv}</td>
+<td>${d.status}</td>
+</tr>
+`;
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
