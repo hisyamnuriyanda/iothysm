@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Monitoring</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>MONITORING REALTIME</h2>
+
+<h3 id="gsr">GSR : --</h3>
+
+<h3 id="hrv">HRV : --</h3>
+
+<h3 id="status">STATUS : --</h3>
+
+</div>
+
+<script type="module">
+
+import { db } from './firebase.js';
+
+import {
+ref,
+onValue
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const dataRef = ref(db, 'sensor');
+
+onValue(dataRef, (snapshot)=>{
+
+const data = snapshot.val();
+
+if(data){
+
+document.getElementById("gsr")
+.innerHTML =
+"GSR : " + data.gsr;
+
+document.getElementById("hrv")
+.innerHTML =
+"HRV : " + data.hrv;
+
+document.getElementById("status")
+.innerHTML =
+"STATUS : " + data.status;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>
