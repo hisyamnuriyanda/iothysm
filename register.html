@@ -2,35 +2,76 @@
 <html>
 <head>
     <title>Register</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h2>Halaman Register</h2>
 
-    <form onsubmit="registerUser(event)">
-        <label>Username:</label><br>
-        <input type="text" id="username" required><br><br>
+<div class="container">
 
-        <label>Password:</label><br>
-        <input type="password" id="password" required><br><br>
+<h2>REGISTER</h2>
 
-        <button type="submit">Daftar</button>
-    </form>
+<form id="registerForm">
 
-    <p>Sudah punya akun? <a href="index.html">Login</a></p>
+<input type="email"
+id="email"
+placeholder="Email"
+required>
 
-    <script>
-        function registerUser(e){
-            e.preventDefault();
+<input type="password"
+id="password"
+placeholder="Password"
+required>
 
-            let user = document.getElementById("username").value;
-            let pass = document.getElementById("password").value;
+<button type="submit">
+Daftar
+</button>
 
-            localStorage.setItem("username", user);
-            localStorage.setItem("password", pass);
+</form>
 
-            alert("Registrasi berhasil!");
-            window.location.href = "index.html";
-        }
-    </script>
+</div>
+
+<script type="module">
+
+import { auth } from './firebase.js';
+
+import {
+createUserWithEmailAndPassword
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+document
+.getElementById("registerForm")
+.addEventListener("submit", async(e)=>{
+
+e.preventDefault();
+
+let email =
+document.getElementById("email").value;
+
+let password =
+document.getElementById("password").value;
+
+try{
+
+await createUserWithEmailAndPassword(
+auth,
+email,
+password
+);
+
+alert("Register berhasil");
+
+window.location.href = "index.html";
+
+}catch(error){
+
+alert(error.message);
+
+}
+
+});
+
+</script>
+
 </body>
 </html>
