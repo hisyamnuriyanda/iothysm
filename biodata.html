@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Biodata</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h2>BIODATA</h2>
+
+<form id="bioForm">
+
+<input type="text"
+id="nama"
+placeholder="Nama"
+required>
+
+<input type="number"
+id="umur"
+placeholder="Umur"
+required>
+
+<select id="gender">
+
+<option>Laki-laki</option>
+<option>Perempuan</option>
+
+</select>
+
+<button type="submit">
+Simpan
+</button>
+
+</form>
+
+</div>
+
+<script type="module">
+
+import { auth, db } from './firebase.js';
+
+import {
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+ref,
+set
+}
+from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+onAuthStateChanged(auth,(user)=>{
+
+if(!user){
+
+window.location.href =
+"index.html";
+
+}
+
+document
+.getElementById("bioForm")
+.addEventListener("submit", async(e)=>{
+
+e.preventDefault();
+
+let nama =
+document.getElementById("nama").value;
+
+let umur =
+document.getElementById("umur").value;
+
+let gender =
+document.getElementById("gender").value;
+
+await set(
+ref(db,'biodata/' + user.uid),
+{
+nama,
+umur,
+gender
+}
+);
+
+alert("Biodata tersimpan");
+
+window.location.href =
+"dashboard.html";
+
+});
+
+});
+
+</script>
+
+</body>
+</html>
